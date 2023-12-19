@@ -113,7 +113,7 @@ stages:
       pool: 
         vmImage: 'ubuntu-latest'
       variables:
-        group: 'Release'
+      - group: 'Release'
       environment: test
       strategy:
         runOnce:
