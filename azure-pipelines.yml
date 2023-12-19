@@ -103,6 +103,7 @@ stages:
               appType: 'webAppLinux'
               appName: '$(WebAppNameDev)'
               package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
+              runtimeStack: 'DOTNETCORE|6.0'
 
 - stage: 'Test'
   displayName: 'Deploy to test env'
@@ -132,3 +133,4 @@ stages:
                 appType: 'webAppLinux'
                 appName: '$(WebAppNameTest)'
                 package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
+                runtimeStack: 'DOTNETCORE|6.0'
