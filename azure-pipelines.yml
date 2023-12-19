@@ -94,8 +94,7 @@ stages:
       runOnce:
         deploy:
           steps:
-          - download: current
-            artifact: drop
+        
           - task: AzureWebApp@1
             displayName: 'Azure App Service Deploy: website'
             inputs:
@@ -120,12 +119,7 @@ stages:
         runOnce:
           deploy: 
             steps:
-            - task: DownloadPipelineArtifact@2
-              displayName: 'Download artifact'
-              inputs:
-                buildType: 'current'
-                artifactName: 'drop'
-                targetPath: '$(Pipeline.Workspace)'
+            
             - task: AzureWebApp@1
               displayName: 'Deploy to App Env'
               inputs:
@@ -149,17 +143,11 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: DownloadPipelineArtifact@2
-            displayName: 'download artifact drop'
-            inputs:
-              buildType: 'current'
-              artifactName: 'drop'
-              targetPath: '$(Pipeline.Workspace)'
-          
+
           - task: AzureWebApp@1
             displayName: 'deploy App'
             inputs:
               azureSubscription: 'Val-DSS2'
               appType: 'webAppLinux'
-              appName: '$(WebAppNameDev)'
+              appName: '$(WebAppNameStaging)'
               package: '$(Pipeline.Workspace)/drop/**/*.zip'
