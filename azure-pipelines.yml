@@ -1,6 +1,14 @@
 trigger:
 - '*'
 
+schedules:
+- cron: '0 0 3 x x'
+  displayName: 'Deploy every day at 3 A.M.'
+  branches:
+    include:
+      - 'relese'
+  always: 'false'
+
 variables:
   buildConfiguration: 'Release'
   releaseBranchName: 'relese'
@@ -94,4 +102,33 @@ stages:
               azureSubscription: 'Val-DSS2'
               appType: 'webAppLinux'
               appName: '$(WebAppNameDev)'
-              package: '$(Pipeline.Workspace)/**/*.zip'
+              package: '$(Pipeline.Workspace)/$(buildConfiguration)/drop/*.zip'
+
+- stage: 'Test'
+  displayName: 'Deploy to test env'
+  dependsOn: 'Dev'
+  condition: (and succeeded(), eq(variables['Build.Reason'], 'Schedule'))
+  jobs:
+    - deployment: 'deploy'
+      pool: 
+        vmImage: 'ubuntu-latest'
+      variables:
+        group: 'Release'
+      environment: test
+      strategy:
+        runOnce:
+          deploy: 
+            steps:
+            - task: DownloadPipelineArtifact@2
+              displayName: 'Download artifact'
+              inputs:
+                buildType: 'current'
+                artifactName: 'drop'
+                targetPath: '$(Pipeline.Workspace)'
+            - task: AzureWebApp@1
+              displayName: 'Deploy to the test Env'
+              inputs:
+                azureSubscription: 'Val-DSS2'
+                appType: 'webAppLinux'
+                appName: '$(WebAppNameTest)'
+                package: '$(Pipeline.Workspace)/$(buildConfiguration)/drop/*.zip'
