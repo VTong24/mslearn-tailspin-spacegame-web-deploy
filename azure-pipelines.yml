@@ -102,7 +102,7 @@ stages:
               azureSubscription: 'Val-DSS2'
               appType: 'webAppLinux'
               appName: '$(WebAppNameDev)'
-              package: '$(Pipeline.Workspace)/$(buildConfiguration)/drop/*.zip'
+              package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
 
 - stage: 'Test'
   displayName: 'Deploy to test env'
@@ -131,4 +131,4 @@ stages:
                 azureSubscription: 'Val-DSS2'
                 appType: 'webAppLinux'
                 appName: '$(WebAppNameTest)'
-                package: '$(Pipeline.Workspace)/$(buildConfiguration)/drop/*.zip'
+                package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
