@@ -91,8 +91,7 @@ stages:
           - task: AzureWebApp@1
             displayName: 'Azure App Service Deploy: website'
             inputs:
-              ConnectionType: 'AzureRM'
-              azureSubscription: 'Vall-DSS2'
+              azureSubscription: 'Val-DSS2'
               appType: 'webAppLinux'
               appName: '$(WebAppNameDev)'
-              packageForLinux: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
+              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
