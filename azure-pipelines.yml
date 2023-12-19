@@ -127,10 +127,39 @@ stages:
                 artifactName: 'drop'
                 targetPath: '$(Pipeline.Workspace)'
             - task: AzureWebApp@1
-              displayName: 'Deploy to the test Env'
+              displayName: 'Deploy to App Env'
               inputs:
                 azureSubscription: 'Val-DSS2'
                 appType: 'webAppLinux'
                 appName: '$(WebAppNameTest)'
                 package: '$(Pipeline.Workspace)/drop/$(buildConfiguration)/*.zip'
                 runtimeStack: 'DOTNETCORE|6.0'
+
+- stage: 'Staging'
+  displayName: 'Deploy to Staging Env'
+  dependsOn: 'Test'
+  jobs:
+  - deployment: 'deploy'
+    pool:
+      vmImage: 'ubuntu-latest'
+    variables:
+    - group: 'Release'
+    environment: 'staging'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadPipelineArtifact@2
+            displayName: 'download artifact drop'
+            inputs:
+              buildType: 'current'
+              artifactName: 'drop'
+              targetPath: '$(Pipeline.Workspace)'
+          
+          - task: AzureWebApp@1
+            displayName: 'deploy App'
+            inputs:
+              azureSubscription: 'Val-DSS2'
+              appType: 'webAppLinux'
+              appName: '$(WebAppNameDev)'
+              package: '$(Pipeline.Workspace)/drop/**/*.zip'
